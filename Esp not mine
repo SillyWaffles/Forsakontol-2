@@ -1,6 +1,6 @@
 -- credit to owner, idk who.
 
-game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 3})
+game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
 
 local Players = game.Workspace.Players
 local RunService = game:GetService("RunService")
