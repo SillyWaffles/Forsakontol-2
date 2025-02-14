@@ -1,2 +1,2 @@
-game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Auto Generator"; Text = "Loaded!"; Duration = 3})
+game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Auto Generator"; Text = "Loaded!"; Duration = 10})
 local a={};local function b(c)if c:IsA("RemoteEvent")and(c.Name==string.char(82)..string.char(69) or "I Love Skibidi Toilet" or "Gaze Was Cool")then a[c]=true;end end;for d,e in ipairs(game:GetDescendants())do b(e);end;game.DescendantAdded:Connect(b);task.spawn(function()while true do for f,g in pairs(a)do if not f.Parent then a[f]=nil;end end;for h,i in pairs(a)do task.spawn(function()for j=1,5 do h:FireServer();task.wait(0.1);end end);end;task.wait(1);end end)
