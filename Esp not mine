@@ -2,8 +2,8 @@
 
 game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
 
-local Players = game.Workspace.Players
-local RunService = game:GetService("RunService")
+local Players = cloneref(game.Workspace.Players)
+local RunService = cloneref(game:GetService("RunService"))
 
 local function createOutlineESP(model, outlineColor, fillColor)
     local highlight = Instance.new("Highlight")
