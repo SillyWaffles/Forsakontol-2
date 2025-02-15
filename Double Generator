@@ -7,7 +7,7 @@ local RunService = cloneref(game:GetService("RunService"))
 local Workspace = cloneref(game:GetService("Workspace"))
 
 local function createOutlineESP(model, outlineColor, fillColor)
-    local highlight = Instance.new"Highlight"))
+    local highlight = Instance.new("Highlight"))
     highlight.Parent = cloneref(model)
     highlight.Adornee = cloneref(model)
     highlight.FillTransparency = 0.75
@@ -19,14 +19,14 @@ end
 local function createHealthIndicator(character)
     local head = cloneref(character:FindFirstChild("Head"))
     if head and not head:FindFirstChild("HealthGui") then
-        local healthGui = Instance.new"BillboardGui")
+        local healthGui = Instance.new("BillboardGui")
         healthGui.Name = "HealthGui"
         healthGui.Size = UDim2.new(0, 100, 0, 30)
         healthGui.AlwaysOnTop = true
         healthGui.MaxDistance = math.huge
         healthGui.Parent = head
 
-        local healthLabel = Instance.new"TextLabel")
+        local healthLabel = Instance.new("TextLabel")
         healthLabel.Size = UDim2.new(1, 0, 1, 0)
         healthLabel.BackgroundTransparency = 1
         healthLabel.TextScaled = true
