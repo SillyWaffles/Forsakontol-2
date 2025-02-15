@@ -7,7 +7,7 @@ local RunService = cloneref(game:GetService("RunService"))
 local Workspace = cloneref(game:GetService("Workspace"))
 
 local function createOutlineESP(model, outlineColor, fillColor)
-    local highlight = Instance.new("Highlight"))
+    local highlight = Instance.new("Highlight")
     highlight.Parent = cloneref(model)
     highlight.Adornee = cloneref(model)
     highlight.FillTransparency = 0.75
