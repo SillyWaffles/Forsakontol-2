@@ -1,17 +1,19 @@
-local map = workspace:WaitForChild("Map"):WaitForChild("Ingame"):WaitForChild("Map")
+cloneref(game:GetService("StarterGui")):SetCore("SendNotification", {Title = "Double Generator"; Text = "Loaded!"; Duration = 20})
+
+local map = cloneref(workspace):WaitForChild("Map"):WaitForChild("Ingame"):WaitForChild("Map")
 local generators = {}
 
 local function hookGenerator(generator)
     if generators[generator] then return end
 
-    local remotes = generator:FindFirstChild("Remotes")
+    local remotes = cloneref(generator):FindFirstChild("Remotes")
     if remotes then
-        local RF = remotes:FindFirstChild("RF")
-        local RE = remotes:FindFirstChild("RE")
+        local RF = cloneref(remotes):FindFirstChild("RF")
+        local RE = cloneref(remotes):FindFirstChild("RE")
 
         if RF and RF:IsA("RemoteFunction") and RE and RE:IsA("RemoteEvent") then
-            RE.OnClientEvent:Connect(function(...)
-                RF:FireServer(...)
+            cloneref(RE).OnClientEvent:Connect(function(...)
+                cloneref(RF):FireServer(...)
             end)
 
             generators[generator] = true
@@ -21,19 +23,19 @@ end
 
 local function updateGenerators()
     for generator in pairs(generators) do
-        if not generator or not generator.Parent then
+        if not generator or not cloneref(generator).Parent then
             generators[generator] = nil
         end
     end
 end
 
-for _, generator in ipairs(map:GetDescendants()) do
+for _, generator in ipairs(cloneref(map):GetDescendants()) do
     if generator:IsA("Model") and generator.Name == "Generator" then
         hookGenerator(generator)
     end
 end
 
-map.DescendantAdded:Connect(function(obj)
+cloneref(map).DescendantAdded:Connect(function(obj)
     if obj:IsA("Model") and obj.Name == "Generator" then
         hookGenerator(obj)
     end
