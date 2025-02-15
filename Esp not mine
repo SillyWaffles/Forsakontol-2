@@ -1,14 +1,15 @@
 -- credit to owner, idk who.
 
-game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
+cloneref(game:GetService("StarterGui")):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
 
-local Players = cloneref(game.Workspace.Players)
+local Players = cloneref(game:GetService("Players"))
 local RunService = cloneref(game:GetService("RunService"))
+local Workspace = cloneref(game:GetService("Workspace"))
 
 local function createOutlineESP(model, outlineColor, fillColor)
-    local highlight = Instance.new("Highlight")
-    highlight.Parent = model
-    highlight.Adornee = model
+    local highlight = cloneref(Instance.new("Highlight"))
+    highlight.Parent = cloneref(model)
+    highlight.Adornee = cloneref(model)
     highlight.FillTransparency = 0.75
     highlight.FillColor = fillColor
     highlight.OutlineColor = outlineColor
@@ -16,16 +17,16 @@ local function createOutlineESP(model, outlineColor, fillColor)
 end
 
 local function createHealthIndicator(character)
-    if character:FindFirstChild("Head") and not character:FindFirstChild("HealthGui") then
-        local healthGui = Instance.new("BillboardGui")
+    local head = cloneref(character:FindFirstChild("Head"))
+    if head and not head:FindFirstChild("HealthGui") then
+        local healthGui = cloneref(Instance.new("BillboardGui"))
         healthGui.Name = "HealthGui"
-        healthGui.Size = UDim2.new(0, 100, 0, 30) -- Fixed size regardless of distance
-        
+        healthGui.Size = UDim2.new(0, 100, 0, 30)
         healthGui.AlwaysOnTop = true
-        healthGui.MaxDistance = math.huge -- Always visible at any distance
-        healthGui.Parent = character.Head
+        healthGui.MaxDistance = math.huge
+        healthGui.Parent = head
 
-        local healthLabel = Instance.new("TextLabel")
+        local healthLabel = cloneref(Instance.new("TextLabel"))
         healthLabel.Size = UDim2.new(1, 0, 1, 0)
         healthLabel.BackgroundTransparency = 1
         healthLabel.TextScaled = true
@@ -37,15 +38,16 @@ local function createHealthIndicator(character)
 end
 
 local function updateHealthIndicators()
-    local survivorsGroup = Players:FindFirstChild("Survivors")
+    local survivorsGroup = cloneref(Players:FindFirstChild("Survivors"))
     if survivorsGroup then
-        for _, character in pairs(survivorsGroup:GetChildren()) do
-            local humanoid = character:FindFirstChildOfClass("Humanoid")
-            if humanoid and character:FindFirstChild("Head") then
+        for _, character in cloneref(survivorsGroup:GetChildren()) do
+            local humanoid = cloneref(character:FindFirstChildOfClass("Humanoid"))
+            local head = cloneref(character:FindFirstChild("Head"))
+            if humanoid and head then
                 createHealthIndicator(character)
-                local healthGui = character.Head:FindFirstChild("HealthGui")
+                local healthGui = cloneref(head:FindFirstChild("HealthGui"))
                 if healthGui then
-                    local healthLabel = healthGui:FindFirstChildOfClass("TextLabel")
+                    local healthLabel = cloneref(healthGui:FindFirstChildOfClass("TextLabel"))
                     if healthLabel then
                         healthLabel.Text = math.floor(humanoid.Health) .. "/" .. humanoid.MaxHealth
                     end
@@ -57,9 +59,10 @@ end
 
 local function createOutlineESPForGroup(group, outlineColor, fillColor)
     if group then
-        for _, obj in pairs(group:GetChildren()) do
-            local humanoid = obj:FindFirstChildOfClass("Humanoid")
-            if humanoid and obj:FindFirstChild("HumanoidRootPart") then
+        for _, obj in cloneref(group:GetChildren()) do
+            local humanoid = cloneref(obj:FindFirstChildOfClass("Humanoid"))
+            local rootPart = cloneref(obj:FindFirstChild("HumanoidRootPart"))
+            if humanoid and rootPart then
                 createOutlineESP(obj, outlineColor, fillColor)
             end
         end
@@ -67,12 +70,12 @@ local function createOutlineESPForGroup(group, outlineColor, fillColor)
 end
 
 local function highlightGenerators()
-    local generatorsFolder = workspace:FindFirstChild("Map") and 
-                             workspace.Map:FindFirstChild("Ingame") and 
-                             workspace.Map.Ingame:FindFirstChild("Map")
+    local map = cloneref(Workspace:FindFirstChild("Map"))
+    local ingame = map and cloneref(map:FindFirstChild("Ingame"))
+    local generatorsFolder = ingame and cloneref(ingame:FindFirstChild("Map"))
 
     if generatorsFolder then
-        for _, obj in pairs(generatorsFolder:GetChildren()) do
+        for _, obj in cloneref(generatorsFolder:GetChildren()) do
             if obj:IsA("Model") and obj.Name == "Generator" then
                 createOutlineESP(obj, Color3.new(1, 1, 0), Color3.new(1, 1, 0.5)) -- Yellow outline, light yellow fill
             end
@@ -83,9 +86,9 @@ end
 local function updateESP()
     while true do
         -- Clear existing highlights
-        for _, obj in pairs(Players:GetChildren()) do
-            if obj:IsA("Model") and obj:FindFirstChild("Humanoid") then
-                for _, highlight in pairs(obj:GetChildren()) do
+        for _, obj in cloneref(Players:GetChildren()) do
+            if obj:IsA("Model") and cloneref(obj:FindFirstChild("Humanoid")) then
+                for _, highlight in cloneref(obj:GetChildren()) do
                     if highlight:IsA("Highlight") then
                         highlight:Destroy()
                     end
@@ -93,12 +96,12 @@ local function updateESP()
             end
         end
 
-        local killersGroup = Players:FindFirstChild("Killers")
+        local killersGroup = cloneref(Players:FindFirstChild("Killers"))
         if killersGroup then
             createOutlineESPForGroup(killersGroup, Color3.new(1, 0, 0), Color3.new(1, 0.5, 0.5)) -- Red outline, light red fill
         end
 
-        local survivorsGroup = Players:FindFirstChild("Survivors")
+        local survivorsGroup = cloneref(Players:FindFirstChild("Survivors"))
         if survivorsGroup then
             createOutlineESPForGroup(survivorsGroup, Color3.new(0, 1, 0), Color3.new(0.5, 1, 0.5)) -- Green outline, light green fill
         end
