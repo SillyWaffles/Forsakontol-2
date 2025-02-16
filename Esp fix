@@ -1,6 +1,6 @@
 -- credit to owner, idk who.
 
-game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
+
 
 local Players = cloneref(game:GetService("Players"))
 local RunService = cloneref(game:GetService("RunService"))
@@ -137,3 +137,45 @@ local function updateESP()
 end
 
 updateESP()
+
+
+local function createLabel(part)
+    if part and not part:FindFirstChild("ItemLabel") and part.Parent then
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "ItemLabel"
+        billboard.Size = UDim2.new(0, 100, 0, 50)
+        billboard.Adornee = part
+        billboard.AlwaysOnTop = true
+        billboard.StudsOffset = Vector3.new(0, 2, 0)
+        billboard.Parent = part
+
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, 0, 1, 0)
+        label.BackgroundTransparency = 1
+        label.TextScaled = true
+        label.Text = part.Parent.Name -- Set label to the parent’s name
+        label.TextColor3 = Color3.new(1, 1, 0) -- Yellow text
+        label.Font = Enum.Font.SourceSansBold
+        label.Parent = billboard
+    end
+end
+
+local function updateLabels()
+    for _, obj in Workspace:GetDescendants() do
+        if obj:IsA("MeshPart") and obj.Name == "ItemRoot" then
+            createLabel(obj)
+        end
+    end
+end
+
+-- Run label update every few seconds
+task.spawn(function()
+    while true do
+        updateLabels()
+        task.wait(3) -- Adjust for performance
+    end
+end)
+
+game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Item Esp"; Text = "Loaded!"; Duration = 5})
+
+game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
