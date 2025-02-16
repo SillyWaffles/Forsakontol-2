@@ -117,11 +117,11 @@ local function updateESP()
 
                 if humanoid then
                     if humanoid.MaxHealth > 500 then
-                        -- High HP players get red ESP & red health indicator
+                        --// High HP players get red ESP & red health (killer) byeah
                         createOutlineESP(character, Color3.new(1, 0, 0), Color3.new(1, 0.5, 0.5))
                         createHealthIndicator(character, Color3.new(1, 0, 0))
                     elseif not inKillers and not inSurvivors then
-                        -- Normal players not in Killers/Survivors get gray ESP & white health indicator
+                        
                         createOutlineESP(character, Color3.new(0.5, 0.5, 0.5), Color3.new(0.7, 0.7, 0.7))
                         createHealthIndicator(character, Color3.new(1, 1, 1))
                     end
@@ -132,7 +132,7 @@ local function updateESP()
         updateHealthIndicators()
         highlightGenerators()
 
-        wait(3) -- Update every second for accuracy
+        wait(3) 
     end
 end
 
@@ -153,7 +153,7 @@ local function createLabel(part)
         label.Size = UDim2.new(1, 0, 1, 0)
         label.BackgroundTransparency = 1
         label.TextScaled = true
-        label.Text = part.Parent.Name -- Set label to the parent’s name
+        label.Text = part.Parent.Name
         label.TextColor3 = Color3.new(1, 1, 0) -- Yellow text
         label.Font = Enum.Font.SourceSansBold
         label.Parent = billboard
