@@ -1,6 +1,5 @@
 -- credit to owner, idk who.
 
-game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
 
 local Players = cloneref(game:GetService("Players"))
 local RunService = cloneref(game:GetService("RunService"))
@@ -137,3 +136,5 @@ local function updateESP()
 end
 
 updateESP()
+
+game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
