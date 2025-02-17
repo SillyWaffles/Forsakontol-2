@@ -1,9 +1,44 @@
 -- credit to owner, idk who.
 
 
+
 local Players = cloneref(game:GetService("Players"))
 local RunService = cloneref(game:GetService("RunService"))
 local Workspace = cloneref(game:GetService("Workspace"))
+
+local function createLabel(part)
+    if part and not part:FindFirstChild("ItemLabel") and part.Parent then
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "ItemLabel"
+        billboard.Size = UDim2.new(0, 100, 0, 50)
+        billboard.Adornee = part
+        billboard.AlwaysOnTop = true
+        billboard.StudsOffset = Vector3.new(0, 2, 0)
+        billboard.Parent = part
+
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, 0, 1, 0)
+        label.BackgroundTransparency = 1
+        label.TextScaled = true
+        label.Text = part.Parent.Name -- Set label to the parent’s name
+        label.TextColor3 = Color3.new(1, 1, 0) -- Yellow text
+        label.Font = Enum.Font.SourceSansBold
+        label.Parent = billboard
+    end
+end
+
+local function updateLabels()
+    for _, obj in Workspace:GetDescendants() do
+        if obj:IsA("MeshPart") and obj.Name == "ItemRoot" then
+            createLabel(obj)
+        end
+    end
+end
+
+
+game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Item Esp"; Text = "Loaded!"; Duration = 5})
+
+
 
 local function createOutlineESP(model, outlineColor, fillColor)
     if model and not model:FindFirstChildOfClass("Highlight") then
@@ -95,31 +130,20 @@ local function updateESP()
             end
         end
 
-        local killersGroup = Players:FindFirstChild("Killers")
-        local survivorsGroup = Players:FindFirstChild("Survivors")
-
-        if killersGroup then
-            createOutlineESPForGroup(killersGroup, Color3.new(1, 0, 0), Color3.new(1, 0.5, 0.5)) -- Red outline, light red fill
-        end
-
-        if survivorsGroup then
-            createOutlineESPForGroup(survivorsGroup, Color3.new(0, 1, 0), Color3.new(0.5, 1, 0.5)) -- Green outline, light green fill
-        end
+    
 
         -- Highlight all players not in Killers or Survivors group and check their HP
         for _, player in Players:GetPlayers() do
             local character = player.Character
             if character then
                 local humanoid = character:FindFirstChildOfClass("Humanoid")
-                local inKillers = killersGroup and killersGroup:FindFirstChild(character.Name)
-                local inSurvivors = survivorsGroup and survivorsGroup:FindFirstChild(character.Name)
-
+                
                 if humanoid then
                     if humanoid.MaxHealth > 500 then
                         -- High HP players get red ESP & red health indicator
                         createOutlineESP(character, Color3.new(1, 0, 0), Color3.new(1, 0.5, 0.5))
                         createHealthIndicator(character, Color3.new(1, 0, 0))
-                    elseif not inKillers and not inSurvivors then
+                    else
                         -- Normal players not in Killers/Survivors get gray ESP & white health indicator
                         createOutlineESP(character, Color3.new(0.5, 0.5, 0.5), Color3.new(0.7, 0.7, 0.7))
                         createHealthIndicator(character, Color3.new(1, 1, 1))
@@ -130,11 +154,17 @@ local function updateESP()
 
         updateHealthIndicators()
         highlightGenerators()
-
+         updateLabels()
         wait(3) -- Update every second for accuracy
     end
 end
-
+game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
 updateESP()
 
-game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
+
+
+
+
+
+
+
