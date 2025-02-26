@@ -7,6 +7,8 @@ local survivorsFolder = workspace:WaitForChild("Players"):WaitForChild("Survivor
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = cloneref(game:GetService("CoreGui"))
 
+
+
 local button = Instance.new("TextButton")
 button.Parent = screenGui
 button.Size = UDim2.new(0, 100, 0, 50)
@@ -17,10 +19,11 @@ button.TextColor3 = Color3.new(1, 1, 1)
 button.Draggable = true
 button.Active = true
 
+local player = game.Players.LocalPlayer
 local char = player.Character
 local hrp = char and char:FindFirstChild("HumanoidRootPart")
 
-local cooldown = false
+local cooldown = false 
 
 local function getNearestGenerator()
     local playerModel = nil
@@ -36,7 +39,7 @@ local function getNearestGenerator()
         return
     end
 
-    local rootPart = playerModel:WaitForChild("HumanoidRootPart")
+    local rootPart = playerModel:WaitForChild("HumanoidRootPart") -- Use root part from player's model
     local closestGen = nil
     local shortestDist = math.huge
 
@@ -44,7 +47,7 @@ local function getNearestGenerator()
 
     for _, obj in pairs(map:GetChildren()) do
         if obj:IsA("Model") and obj.Name == "Generator" then
-            local primaryPart = obj.PrimaryPart or obj:FindFirstChild("PrimaryPart")
+            local primaryPart = obj.PrimaryPart or obj:FindFirstChild("PrimaryPart") -- Ensure it has a PrimaryPart
             if primaryPart then
                 local dist = (primaryPart.Position - rootPart.Position).Magnitude
                 if dist < shortestDist then
@@ -59,21 +62,25 @@ local function getNearestGenerator()
 end
 
 button.MouseButton1Click:Connect(function()
-    if cooldown then return end
+    if cooldown then return end -- Prevent multiple clicks
 
-    cooldown = true
+    cooldown = true 
 
     local nearestGen = getNearestGenerator()
     if nearestGen then
         local remotes = nearestGen:WaitForChild("Remotes")
 
         remotes:WaitForChild("RE"):FireServer()
-        task.wait(0.05)
+
+        task.wait(0.05) 
+
         remotes:WaitForChild("RF"):InvokeServer("leave")
+
+        
     else
         warn("No nearby generator found!")
     end
-
     task.wait(1)
-    cooldown = false
+
+    cooldown = false 
 end)
