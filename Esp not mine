@@ -1,44 +1,54 @@
--- credit to owner, idk who.
-
-
-
 local Players = cloneref(game:GetService("Players"))
 local RunService = cloneref(game:GetService("RunService"))
 local Workspace = cloneref(game:GetService("Workspace"))
+local StarterGui = cloneref(game:GetService("StarterGui"))
 
-local function createLabel(part)
-    if part and not part:FindFirstChild("ItemLabel") and part.Parent then
-        local billboard = Instance.new("BillboardGui")
-        billboard.Name = "ItemLabel"
-        billboard.Size = UDim2.new(0, 100, 0, 50)
-        billboard.Adornee = part
-        billboard.AlwaysOnTop = true
-        billboard.StudsOffset = Vector3.new(0, 2, 0)
-        billboard.Parent = part
+local function createTextLabel(tool)
+    if tool:FindFirstChild("ToolNameLabel") then return end
 
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, 0, 1, 0)
-        label.BackgroundTransparency = 1
-        label.TextScaled = true
-        label.Text = part.Parent.Name -- Set label to the parent’s name
-        label.TextColor3 = Color3.new(1, 1, 0) -- Yellow text
-        label.Font = Enum.Font.SourceSansBold
-        label.Parent = billboard
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "ToolNameLabel"
+    billboard.Adornee = tool
+    billboard.Size = UDim2.new(0, 200, 0, 50)
+    billboard.StudsOffset = Vector3.new(0, 2, 0)
+    billboard.AlwaysOnTop = true
+    billboard.MaxDistance = math.huge
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Text = tool.Name
+    textLabel.TextColor3 = Color3.new(1, 1, 1)
+    textLabel.TextSize = UDim2.new(1, 0, 1, 0)
+    textLabel.Font = Enum.Font.SourceSansBold
+    textLabel.Parent = billboard
+
+    billboard.Parent = tool
+end
+
+local function applyOutline(tool)
+    if not tool:FindFirstChildOfClass("Highlight") then
+        local highlight = Instance.new("Highlight")
+        highlight.FillColor = Color3.new(1, 1, 0)
+        highlight.OutlineColor = Color3.new(1, 0, 0)
+        highlight.Parent = tool
+    end
+    createTextLabel(tool)
+end
+
+for _, obj in Workspace:GetDescendants() do
+    if obj:IsA("Tool") then
+        applyOutline(obj)
     end
 end
 
-local function updateLabels()
-    for _, obj in Workspace:GetDescendants() do
-        if obj:IsA("MeshPart") and obj.Name == "ItemRoot" then
-            createLabel(obj)
-        end
+Workspace.DescendantAdded:Connect(function(obj)
+    if obj:IsA("Tool") then
+        applyOutline(obj)
     end
-end
+end)
 
-
-game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Item Esp"; Text = "Loaded!"; Duration = 5})
-
-
+StarterGui:SetCore("SendNotification", {Title = "Item Esp"; Text = "Loaded!"; Duration = 5})
 
 local function createOutlineESP(model, outlineColor, fillColor)
     if model and not model:FindFirstChildOfClass("Highlight") then
@@ -80,7 +90,7 @@ local function updateHealthIndicators()
             local humanoid = character:FindFirstChildOfClass("Humanoid")
             local head = character:FindFirstChild("Head")
             if humanoid and head then
-                local textColor = humanoid.MaxHealth > 500 and Color3.new(1, 0, 0) or Color3.new(1, 1, 1) -- Red if max HP > 500
+                local textColor = humanoid.MaxHealth > 500 and Color3.new(1, 0, 0) or Color3.new(1, 1, 1)
                 createHealthIndicator(character, textColor)
                 
                 local healthGui = head:FindFirstChild("HealthGui")
@@ -110,41 +120,31 @@ end
 
 local function highlightGenerators()
     for _, obj in workspace:GetDescendants() do
-    if obj:IsA("Model") and obj.Name == "Generator" then
-        createOutlineESP(obj, Color3.new(1, 1, 0), Color3.new(1, 1, 0.5)) -- Yellow outline, light yellow fill
+        if obj:IsA("Model") and obj.Name == "Generator" then
+            createOutlineESP(obj, Color3.new(1, 1, 0), Color3.new(1, 1, 0.5))
+        end
     end
-end
 end
 
 local function updateESP()
     while true do
-        -- Clear existing highlights
-        for _, player in Players:GetPlayers() do
+        local players = Players:GetPlayers()
+
+        for _, player in players do
             local character = player.Character
             if character then
-                for _, highlight in character:GetChildren() do
-                    if highlight:IsA("Highlight") then
-                        highlight:Destroy()
+                for _, obj in character:GetChildren() do
+                    if obj:IsA("Highlight") then
+                        obj:Destroy()
                     end
                 end
-            end
-        end
 
-    
-
-        -- Highlight all players not in Killers or Survivors group and check their HP
-        for _, player in Players:GetPlayers() do
-            local character = player.Character
-            if character then
                 local humanoid = character:FindFirstChildOfClass("Humanoid")
-                
                 if humanoid then
                     if humanoid.MaxHealth > 500 then
-                        -- High HP players get red ESP & red health indicator
                         createOutlineESP(character, Color3.new(1, 0, 0), Color3.new(1, 0.5, 0.5))
                         createHealthIndicator(character, Color3.new(1, 0, 0))
                     else
-                        -- Normal players not in Killers/Survivors get gray ESP & white health indicator
                         createOutlineESP(character, Color3.new(0.5, 0.5, 0.5), Color3.new(0.7, 0.7, 0.7))
                         createHealthIndicator(character, Color3.new(1, 1, 1))
                     end
@@ -154,17 +154,10 @@ local function updateESP()
 
         updateHealthIndicators()
         highlightGenerators()
-         updateLabels()
-        wait(3) -- Update every second for accuracy
+        
+        task.wait(3)
     end
 end
-game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
+
+StarterGui:SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
 updateESP()
-
-
-
-
-
-
-
-
