@@ -65,6 +65,7 @@ button.MouseButton1Click:Connect(function()
     if cooldown then return end -- Prevent multiple clicks
 
     cooldown = true 
+    button.Text = "Cooldown"
 
     local nearestGen = getNearestGenerator()
     if nearestGen then
@@ -81,6 +82,6 @@ button.MouseButton1Click:Connect(function()
         warn("No nearby generator found!")
     end
     task.wait(1)
-
+    button.Text = "Do Generator"
     cooldown = false 
 end)
