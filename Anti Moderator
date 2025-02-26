@@ -7,7 +7,7 @@ local minRank = 2
 
 local function notify(message)
     game.StarterGui:SetCore("SendNotification", {
-        Title = "Group Member Detected",
+        Title = "IMPOSTER Detected",
         Text = message,
         Duration = 30
     })
