@@ -24,7 +24,7 @@ local function createTextLabel(tool)
     textLabel.BackgroundTransparency = 1
     textLabel.Text = tool.Name
     textLabel.TextColor3 = Color3.new(1, 1, 1) -- White text
-    textLabel.TextSize = UDim2.new(1, 0, 1, 0)
+    textLabel.TextScaled = true
     textLabel.Font = Enum.Font.SourceSansBold
     textLabel.Parent = billboard
 
@@ -47,7 +47,7 @@ end
 
 
 for _, obj in Workspace:GetDescendants() do
-    if obj:IsA("Tool") then
+    if obj:IsA("Tool") and not (obj.Name == "RedFlag" or obj.Name == "BlueFlag" or obj.Name == "Item") then
         applyOutline(obj)
     end
 end
@@ -179,11 +179,4 @@ local function updateESP()
     end
 end
 game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
-updateESP()
-
-
-
-
-
-
-
+task.spawn(updateESP())
