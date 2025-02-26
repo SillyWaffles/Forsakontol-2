@@ -5,13 +5,15 @@ local LocalPlayer = Players.LocalPlayer
 local groupId = 33548380 
 local minRank = 2 
 
-local function notify(message)
+local function notify(Title, message)
     game.StarterGui:SetCore("SendNotification", {
-        Title = "IMPOSTER Detected",
+        Title = Title,
         Text = message,
         Duration = 30
     })
 end
+
+notify("Gaze", "Anti Moderator Loaded")
 
 local function checkForGroupMembers()
     for _, player in pairs(Players:GetPlayers()) do
@@ -19,7 +21,7 @@ local function checkForGroupMembers()
             local rank = player:GetRankInGroup(groupId)
             if rank >= minRank then
                 local displayName = player.DisplayName
-                notify(displayName .. " is Suspicious")
+                notify("Gaze", displayName .. " is Suspicious")
                 task.wait(3)
                 LocalPlayer:Kick("Mod/Staff/Admin/Tester In Game")
             end
