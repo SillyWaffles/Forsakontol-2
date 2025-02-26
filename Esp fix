@@ -1,10 +1,68 @@
--- credit to owner, idk who.
-
-
+-- hawk tuah
 
 local Players = cloneref(game:GetService("Players"))
 local RunService = cloneref(game:GetService("RunService"))
 local Workspace = cloneref(game:GetService("Workspace"))
+
+
+local function createTextLabel(tool)
+    
+    if tool:FindFirstChild("ToolNameLabel") then return end
+
+    
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "ToolNameLabel"
+    billboard.Adornee = tool
+    billboard.Size = UDim2.new(0, 100, 0, 30)
+    billboard.StudsOffset = Vector3.new(0, 2, 0)
+    billboard.AlwaysOnTop = true
+    billboard.MaxDistance = math.huge
+
+    
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Text = tool.Name
+    textLabel.TextColor3 = Color3.new(1, 1, 1) -- White text
+    textLabel.TextSize = UDim2.new(1, 0, 1, 0)
+    textLabel.Font = Enum.Font.SourceSansBold
+    textLabel.Parent = billboard
+
+    
+    billboard.Parent = tool
+end
+
+local function applyOutline(tool)
+    -- Check if it already has a highlight
+    if not tool:FindFirstChildOfClass("Highlight") then
+        local highlight = Instance.new("Highlight")
+        highlight.FillColor = Color3.new(1, 1, 0) -- Yellow glow
+        highlight.OutlineColor = Color3.new(1, 0, 0) -- Red outline
+        highlight.Parent = tool
+    end
+
+    
+    createTextLabel(tool)
+end
+
+
+for _, obj in Workspace:GetDescendants() do
+    if obj:IsA("Tool") then
+        applyOutline(obj)
+    end
+end
+
+
+Workspace.DescendantAdded:Connect(function(obj)
+    if obj:IsA("Tool") then
+        applyOutline(obj)
+    end
+end)
+
+
+game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Item Esp"; Text = "Loaded!"; Duration = 5})
+
+
 
 local function createOutlineESP(model, outlineColor, fillColor)
     if model and not model:FindFirstChildOfClass("Highlight") then
@@ -84,44 +142,27 @@ end
 
 local function updateESP()
     while true do
-        -- Clear existing highlights
-        for _, player in Players:GetPlayers() do
+        local players = Players:GetPlayers() -- Store once to avoid multiple function calls
+
+        for _, player in players do
             local character = player.Character
             if character then
-                for _, highlight in character:GetChildren() do
-                    if highlight:IsA("Highlight") then
-                        highlight:Destroy()
+                -- Clear existing highlights
+                for _, obj in character:GetChildren() do
+                    if obj:IsA("Highlight") then
+                        obj:Destroy()
                     end
                 end
-            end
-        end
 
-        local killersGroup = Players:FindFirstChild("Killers")
-        local survivorsGroup = Players:FindFirstChild("Survivors")
-
-        if killersGroup then
-            createOutlineESPForGroup(killersGroup, Color3.new(1, 0, 0), Color3.new(1, 0.5, 0.5)) -- Red outline, light red fill
-        end
-
-        if survivorsGroup then
-            createOutlineESPForGroup(survivorsGroup, Color3.new(0, 1, 0), Color3.new(0.5, 1, 0.5)) -- Green outline, light green fill
-        end
-
-        -- Highlight all players not in Killers or Survivors group and check their HP
-        for _, player in Players:GetPlayers() do
-            local character = player.Character
-            if character then
+                -- Check humanoid and apply ESP accordingly
                 local humanoid = character:FindFirstChildOfClass("Humanoid")
-                local inKillers = killersGroup and killersGroup:FindFirstChild(character.Name)
-                local inSurvivors = survivorsGroup and survivorsGroup:FindFirstChild(character.Name)
-
                 if humanoid then
                     if humanoid.MaxHealth > 500 then
-                        --// High HP players get red ESP & red health (killer) byeah
+                        -- High HP players get red ESP & red health indicator
                         createOutlineESP(character, Color3.new(1, 0, 0), Color3.new(1, 0.5, 0.5))
                         createHealthIndicator(character, Color3.new(1, 0, 0))
-                    elseif not inKillers and not inSurvivors then
-                        
+                    else
+                        -- Normal players not in Killers/Survivors get gray ESP & white health indicator
                         createOutlineESP(character, Color3.new(0.5, 0.5, 0.5), Color3.new(0.7, 0.7, 0.7))
                         createHealthIndicator(character, Color3.new(1, 1, 1))
                     end
@@ -129,53 +170,20 @@ local function updateESP()
             end
         end
 
+        
         updateHealthIndicators()
         highlightGenerators()
+        
 
-        wait(3) 
+        task.wait(3) -- More accurate and efficient timing
     end
 end
-
+game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
 updateESP()
 
 
-local function createLabel(part)
-    if part and not part:FindFirstChild("ItemLabel") and part.Parent then
-        local billboard = Instance.new("BillboardGui")
-        billboard.Name = "ItemLabel"
-        billboard.Size = UDim2.new(0, 100, 0, 50)
-        billboard.Adornee = part
-        billboard.AlwaysOnTop = true
-        billboard.StudsOffset = Vector3.new(0, 2, 0)
-        billboard.Parent = part
 
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, 0, 1, 0)
-        label.BackgroundTransparency = 1
-        label.TextScaled = true
-        label.Text = part.Parent.Name
-        label.TextColor3 = Color3.new(1, 1, 0) -- Yellow text
-        label.Font = Enum.Font.SourceSansBold
-        label.Parent = billboard
-    end
-end
 
-local function updateLabels()
-    for _, obj in Workspace:GetDescendants() do
-        if obj:IsA("MeshPart") and obj.Name == "ItemRoot" then
-            createLabel(obj)
-        end
-    end
-end
 
--- Run label update every few seconds
-task.spawn(function()
-    while true do
-        updateLabels()
-        task.wait(3) -- Adjust for performance
-    end
-end)
 
-game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Item Esp"; Text = "Loaded!"; Duration = 5})
 
-game:GetService("StarterGui"):SetCore("SendNotification", {Title = "Esp"; Text = "Loaded!"; Duration = 20})
