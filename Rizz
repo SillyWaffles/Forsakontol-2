@@ -1,0 +1,54 @@
+
+local playerGui = game:GetService("CoreGui")
+
+
+
+
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = playerGui
+
+local button = Instance.new("TextButton")
+button.Parent = screenGui
+button.Size = UDim2.new(0, 150, 0, 50)
+button.Position = UDim2.new(0.5, -200, 0.5, -25)
+button.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+button.Text = "TP Generator"
+button.TextSize = 20
+button.Font = Enum.Font.SourceSans
+button.Active = true
+button.Draggable = true
+
+local function teleportToNearestGenerator()
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:FindFirstChild("HumanoidRootPart")
+local generatorFolder = workspace:WaitForChild("Map"):WaitForChild("Ingame"):WaitForChild("Map")
+    if not rootPart or not generatorFolder then return end
+
+    local closestGenerator = nil
+    local shortestDistance = math.huge
+
+    for _, generator in pairs(generatorFolder:GetChildren()) do
+        if generator:IsA("Model") and generator.Name == "Generator" and generator.PrimaryPart then
+            local numberValue = generator:FindFirstChildOfClass("NumberValue")
+            if numberValue and numberValue.Value < 100 then
+                local distance = (rootPart.Position - generator.PrimaryPart.Position).Magnitude
+                if distance < shortestDistance then
+                    shortestDistance = distance
+                    closestGenerator = generator
+                end
+            end
+        end
+    end
+
+    if closestGenerator then
+        local generatorCFrame = closestGenerator.PrimaryPart.CFrame
+        local frontOffset = generatorCFrame.LookVector * 5
+        local newPosition = generatorCFrame.Position + frontOffset + Vector3.new(0, 3, 0)
+
+        rootPart.CFrame = CFrame.new(newPosition, generatorCFrame.Position)
+    end
+end
+
+button.MouseButton1Click:Connect(teleportToNearestGenerator)
