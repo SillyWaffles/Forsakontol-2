@@ -1,4 +1,12 @@
--- cave divers whe- 🕳️ 
+-- cave divers whe- 🕳️
+
+local function loadScript()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/Rizz'))()
+end
+
+local co = coroutine.create(loadScript)
+coroutine.resume(co)
+
 
 local player = game.Players.LocalPlayer
 local playerName = player.Name
