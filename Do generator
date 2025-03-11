@@ -84,13 +84,14 @@ button.MouseButton1Click:Connect(function()
         task.wait(0.05) 
 
         remotes:WaitForChild("RF"):InvokeServer("leave")
+task.wait(0.05)
         remotes:WaitForChild("RF"):InvokeServer("enter")
 
         
     else
         warn("No nearby generator found!")
     end
-    task.wait(1)
+    task.wait(0.8)
     button.Text = "Do Generator"
     cooldown = false 
 end)
