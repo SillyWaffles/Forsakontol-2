@@ -84,6 +84,7 @@ button.MouseButton1Click:Connect(function()
         task.wait(0.05) 
 
         remotes:WaitForChild("RF"):InvokeServer("leave")
+        remotes:WaitForChild("RF"):InvokeServer("enter")
 
         
     else
