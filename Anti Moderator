@@ -19,6 +19,10 @@ local function checkForGroupMembers()
     for _, player in pairs(Players:GetPlayers()) do
         if player:IsInGroup(groupId) then
             local rank = player:GetRankInGroup(groupId)
+        if rank == 1 then
+        notify("Gaze", displayName .. " is reporter")
+         end
+
             if rank >= minRank then
                 local displayName = player.DisplayName
                 notify("Gaze", displayName .. " is Suspicious")
