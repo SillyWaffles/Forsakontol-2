@@ -3,7 +3,7 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local groupId = 33548380 
-local minRank = 1
+local minRank = 2
 
 local function notify(Title, message)
     game.StarterGui:SetCore("SendNotification", {
@@ -23,7 +23,7 @@ local function checkForGroupMembers()
                 local displayName = player.DisplayName
                 notify("Gaze", displayName .. " is Suspicious")
                 task.wait(3)
-                LocalPlayer:Kick("Group MemberIn Game")
+                LocalPlayer:Kick("Mods In Game")
             end
         end
     end
