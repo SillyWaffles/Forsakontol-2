@@ -1,10 +1,10 @@
 local plr = game.Players.LocalPlayer
 local rs = game:GetService("RunService")
 
-local rotSpd = 0.10
-local tpChance = 0.314
-local minN = 0.1
-local maxN = 0.15
+local rotSpd = 0.025
+local tpChance = 1
+local minN = 0.01
+local maxN = 0.08
 
 local function applyFX(char)
     local hum = char:WaitForChild("Humanoid")
