@@ -1,4 +1,4 @@
-local ws = game:GetService("Workspace")
+local ws = cloneref(game:GetService("Workspace"))
 
 local function addLabel(tool)
     if string.lower(tool.Name):find("flag") or not tool:FindFirstChild("Handle") then return end
