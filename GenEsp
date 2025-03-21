@@ -1,0 +1,64 @@
+local cref = cloneref or function(ref) return ref end
+local ts = cref(game:GetService("TweenService"))
+local ws = cref(workspace)
+
+local gens, hl = {}, {}
+
+local function getColors(p)
+    p = math.clamp(p, 1, 100)
+    if p == 100 then return Color3.fromRGB(0, 255, 0), Color3.fromRGB(0, 200, 0) end
+    if p <= 50 then
+        local g = math.floor(255 * (p / 50))
+        return Color3.fromRGB(255, g, 0), Color3.fromRGB(200, g - 55, 0)
+    end
+    if p <= 98 then return Color3.fromRGB(255, 255, 0), Color3.fromRGB(200, 200, 0) end
+    local r = math.floor(255 * ((100 - p) / 10))
+    return Color3.fromRGB(r, 255, 0), Color3.fromRGB(math.max(0, r - 55), 200, 0)
+end
+
+local function updateHL(gen)
+    local prog, h = gen:FindFirstChild("Progress"), hl[gen]
+    if prog and h then
+        local f, o = getColors(prog.Value)
+        local tf = ts:Create(h, TweenInfo.new(0.5, Enum.EasingStyle.Linear), {FillColor = f})
+        local to = ts:Create(h, TweenInfo.new(0.5, Enum.EasingStyle.Linear), {OutlineColor = o})
+        tf:Play()
+        to:Play()
+        tf.Completed:Connect(function() tf:Destroy() to:Destroy() end)
+    end
+end
+
+local function addGen(obj)
+    if obj:IsA("Model") and obj.Name == "Generator" and not gens[obj] then
+        gens[obj] = true
+        local h = Instance.new("Highlight", obj)
+        h.Adornee, hl[obj] = obj, h
+        local f, o = getColors(1)
+        h.FillColor, h.OutlineColor = f, o
+        local prog = obj:FindFirstChild("Progress")
+        if prog and prog:IsA("NumberValue") then
+            prog.Changed:Connect(function() updateHL(obj) end)
+            updateHL(obj)
+        end
+    end
+end
+
+local function removeGen(obj)
+    if gens[obj] then
+        gens[obj], hl[obj] = nil, nil
+        if hl[obj] then hl[obj]:Destroy() end
+    end
+end
+
+local function scanGens()
+    local m = ws:FindFirstChild("Map")
+    local gm = m and m:FindFirstChild("Ingame") and m.Ingame:FindFirstChild("Map")
+    if gm then
+        gens, hl = {}, {}
+        for _, obj in ipairs(gm:GetChildren()) do task.wait(0.5) addGen(obj) end
+        gm.ChildAdded:Connect(addGen)
+        gm.ChildRemoved:Connect(removeGen)
+    end
+end
+
+task.spawn(function() while true do scanGens() task.wait(10) end end)
