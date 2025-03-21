@@ -27,11 +27,12 @@ local function createHealthIndicator(character, textColor)
         healthGui.Parent = head
 
         local healthLabel = Instance.new("TextLabel")
-        healthLabel.Size = UDim2.new(1, 0, 1, 0)
+        healthLabel.Size = UDim2.new(0.5, 0, 0.5, 0)
         healthLabel.BackgroundTransparency = 1
         healthLabel.TextScaled = true
         healthLabel.Text = ""
         healthLabel.TextColor3 = textColor
+        healthLabel.TextTransparency = 0.8  -- Adjust transparency (0 = fully visible, 1 = fully invisible)
         healthLabel.Font = Enum.Font.SourceSansBold
         healthLabel.Parent = healthGui
     end
