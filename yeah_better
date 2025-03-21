@@ -1,36 +1,28 @@
-local plr = game.Players.LocalPlayer
-local rs = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+local runService = cloneref(game:GetService("RunService"))
 
-local rotSpd = 0.025
-local tpChance = 0.5
-local minN = 0.01
-local maxN = 0.08
+local function setupRotation(character)
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    local humanoid = character:WaitForChild("Humanoid")
 
-local function applyFX(char)
-    local hum = char:WaitForChild("Humanoid")
-    local root = char:WaitForChild("HumanoidRootPart")
-
-    rs.RenderStepped:Connect(function()
-        if not char or not char.Parent then return end
-
-        local moveDir = hum.MoveDirection
-        if moveDir.Magnitude > 0 then
-            local targetCF = CFrame.lookAt(root.Position, root.Position + moveDir * Vector3.new(1, 0, 1))
-            root.CFrame = root.CFrame:Lerp(targetCF, rotSpd)
-
-            if math.random() < tpChance then
-                local randN = math.random() * (maxN - minN) + minN
-                root.CFrame = root.CFrame + root.CFrame.LookVector * randN
+    runService.RenderStepped:Connect(function()
+        if character.Parent then -- Ensure character still exists
+            local moveDirection = humanoid.MoveDirection
+            if moveDirection.Magnitude > 0 then
+                humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position) * CFrame.lookAt(Vector3.new(), moveDirection)
             end
         end
     end)
 end
 
-local function onCharAdded(char)
-    applyFX(char)
+local function onCharacterAdded(character)
+    setupRotation(character)
 end
 
-plr.CharacterAdded:Connect(onCharAdded)
-if plr.Character then
-    applyFX(plr.Character)
+-- Setup rotation for the current character
+if player.Character then
+    setupRotation(player.Character)
 end
+
+-- Listen for new character spawns
+player.CharacterAdded:Connect(onCharacterAdded)
