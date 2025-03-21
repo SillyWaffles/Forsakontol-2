@@ -9,10 +9,10 @@ local function createOutlineESP(model, outlineColor, fillColor)
         local highlight = Instance.new("Highlight")
         highlight.Parent = model
         highlight.Adornee = model
-        highlight.FillTransparency = 0.99
+        highlight.FillTransparency = 0.9
         highlight.FillColor = fillColor
         highlight.OutlineColor = outlineColor
-        highlight.OutlineTransparency = 0.98
+        highlight.OutlineTransparency = 0.9
     end
 end
 
