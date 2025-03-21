@@ -3,8 +3,8 @@ local rs = game:GetService("RunService")
 
 local rotSpd = 0.10
 local tpChance = 1
-local minN = 0.2
-local maxN = 0.5
+local minN = 0.05
+local maxN = 0.1
 
 local function applyFX(char)
     local hum = char:WaitForChild("Humanoid")
