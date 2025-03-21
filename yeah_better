@@ -2,7 +2,7 @@ local plr = game.Players.LocalPlayer
 local rs = game:GetService("RunService")
 
 local rotSpd = 0.025
-local tpChance = 1
+local tpChance = 0.5
 local minN = 0.01
 local maxN = 0.08
 
