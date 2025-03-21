@@ -1,13 +1,19 @@
 local ws = cloneref(game:GetService("Workspace"))
 
 local function addLabel(tool)
-    if string.lower(tool.Name):find("flag") or not tool:FindFirstChild("Handle") then return end
+    if string.lower(tool.Name):find("flag") then return end
+
+    local parentPart = tool:FindFirstChild("Handle") or tool:FindFirstChildWhichIsA("BasePart")
+    if not parentPart then return end -- If no valid part is found, exit
 
     local bb = Instance.new("BillboardGui")
     bb.Name = "ToolLabel"
-    bb.Size = UDim2.new(4, 0, 1, 0)
+    bb.Size = UDim2.new(0, 150, 0, 30) -- Smaller size
     bb.StudsOffset = Vector3.new(0, 2, 0)
     bb.AlwaysOnTop = true
+    bb.MaxDistance = math.huge -- Always visible
+    bb.LightInfluence = 0 -- Keeps brightness consistent
+    bb.Parent = parentPart
 
     local lbl = Instance.new("TextLabel")
     lbl.Size = UDim2.new(1, 0, 1, 0)
@@ -16,10 +22,9 @@ local function addLabel(tool)
     lbl.Font = Enum.Font.SourceSansBold
     lbl.TextColor3 = Color3.new(1, 1, 1)
     lbl.TextStrokeTransparency = 0
+    lbl.TextTransparency = 0.3 -- Slightly transparent text
     lbl.Text = tool.Name
     lbl.Parent = bb
-
-    bb.Parent = tool.Handle
 end
 
 for _, tool in ipairs(ws:GetDescendants()) do
@@ -27,12 +32,16 @@ for _, tool in ipairs(ws:GetDescendants()) do
 end
 
 ws.DescendantAdded:Connect(function(tool)
-    if tool:IsA("Tool") then task.wait(0.1) addLabel(tool) end
+    if tool:IsA("Tool") then 
+        task.wait(0.1) 
+        addLabel(tool) 
+    end
 end)
 
 ws.DescendantRemoving:Connect(function(tool)
-    if tool:IsA("Tool") and tool:FindFirstChild("Handle") then
-        local lbl = tool.Handle:FindFirstChild("ToolLabel")
+    local parentPart = tool:FindFirstChild("Handle") or tool:FindFirstChildWhichIsA("BasePart")
+    if parentPart then
+        local lbl = parentPart:FindFirstChild("ToolLabel")
         if lbl then lbl:Destroy() end
     end
 end)
