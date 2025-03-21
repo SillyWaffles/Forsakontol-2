@@ -1,3 +1,19 @@
+local ws = cloneref(game:GetService("Workspace"))
+
+if ws:FindFirstChild("Gayze") then return end
+
+local part = Instance.new("Part")
+part.Parent = ws
+part.Name = "Gayze"
+part.Size = Vector3.new(5, 5, 5)
+part.Position = Vector3.new(0, 5, 0)
+part.Transparency = 1
+part.CanCollide = false
+part.Anchored = true
+
+
+
+
 function Load(url)
     coroutine.wrap(function()
         local success, scriptFunction = pcall(function()
@@ -11,6 +27,8 @@ function Load(url)
         end
     end)()
 end
+
+
 
 
 Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/Do%20generator")
