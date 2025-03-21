@@ -1,0 +1,21 @@
+function Load(url)
+    coroutine.wrap(function()
+        local success, scriptFunction = pcall(function()
+            return loadstring(game:HttpGet(url, true))
+        end)
+
+        if success and scriptFunction then
+            coroutine.wrap(scriptFunction)() -- Runs the loaded script in a separate coroutine
+        else
+            warn("Failed to load script:", scriptFunction)
+        end
+    end)()
+end
+
+
+Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/Do%20generator")
+Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/Stawmina")
+Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/PlayerEsp")
+Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/GenEsp")
+Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/yeah_better")
+Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/Tool%20Esp")
