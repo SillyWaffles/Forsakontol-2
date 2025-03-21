@@ -5,26 +5,36 @@ local ws = cref(workspace)
 local gens, hl = {}, {}
 
 local function getColors(p)
-    p = math.clamp(p, 1, 100)
-    if p == 100 then return Color3.fromRGB(0, 255, 0), Color3.fromRGB(0, 200, 0) end
-    if p <= 50 then
-        local g = math.floor(255 * (p / 50))
-        return Color3.fromRGB(255, g, 0), Color3.fromRGB(200, g - 55, 0)
+    local progress = math.clamp(p / 100, 0, 1)
+    
+    -- Color transition logic:
+    local fillColor
+    if progress < 1 then
+        fillColor = Color3.new(1, progress, 0) -- Red (1,0,0) to Yellow (1,1,0)
+    else
+        fillColor = Color3.new(0, 1, 0) -- Green (0,1,0) at 100%
     end
-    if p <= 98 then return Color3.fromRGB(255, 255, 0), Color3.fromRGB(200, 200, 0) end
-    local r = math.floor(255 * ((100 - p) / 10))
-    return Color3.fromRGB(r, 255, 0), Color3.fromRGB(math.max(0, r - 55), 200, 0)
+    
+    local outlineColor = fillColor:Lerp(Color3.new(0, 0, 0), 0.3) -- Slightly darker outline
+
+    return fillColor, outlineColor
 end
 
 local function updateHL(gen)
     local prog, h = gen:FindFirstChild("Progress"), hl[gen]
     if prog and h then
         local f, o = getColors(prog.Value)
-        local tf = ts:Create(h, TweenInfo.new(0.5, Enum.EasingStyle.Linear), {FillColor = f})
-        local to = ts:Create(h, TweenInfo.new(0.5, Enum.EasingStyle.Linear), {OutlineColor = o})
+        local speed = math.clamp(1 - (prog.Value / 100), 0.2, 0.5)
+        
+        local tf = ts:Create(h, TweenInfo.new(speed, Enum.EasingStyle.Linear), {FillColor = f})
+        local to = ts:Create(h, TweenInfo.new(speed, Enum.EasingStyle.Linear), {OutlineColor = o})
         tf:Play()
         to:Play()
-        tf.Completed:Connect(function() tf:Destroy() to:Destroy() end)
+        
+        tf.Completed:Connect(function()
+            tf:Destroy()
+            to:Destroy()
+        end)
     end
 end
 
@@ -55,10 +65,18 @@ local function scanGens()
     local gm = m and m:FindFirstChild("Ingame") and m.Ingame:FindFirstChild("Map")
     if gm then
         gens, hl = {}, {}
-        for _, obj in ipairs(gm:GetChildren()) do task.wait(0.5) addGen(obj) end
+        for _, obj in ipairs(gm:GetChildren()) do
+            task.wait(0.5)
+            addGen(obj)
+        end
         gm.ChildAdded:Connect(addGen)
         gm.ChildRemoved:Connect(removeGen)
     end
 end
 
-task.spawn(function() while true do scanGens() task.wait(10) end end)
+task.spawn(function()
+    while true do
+        scanGens()
+        task.wait(10)
+    end
+end)
