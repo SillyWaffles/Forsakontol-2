@@ -1,17 +1,5 @@
 -- cave divers whe- 🕳️
-local function Load(url)
-    coroutine.wrap(function()
-        local success, result = pcall(function()
-            return loadstring(game:HttpGet(url, true))()
-        end)
 
-        if not success then
-            warn("Failed to load script:", result)
-        end
-    end)()
-end
-
-Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/Rizz")
 
 
 local player = game.Players.LocalPlayer
