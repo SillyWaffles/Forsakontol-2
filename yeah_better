@@ -4,12 +4,14 @@ local runService = cloneref(game:GetService("RunService"))
 local function setupRotation(character)
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
     local humanoid = character:WaitForChild("Humanoid")
+    local rotationSpeed = 0.85 -- Almost instant but still smooth
 
     runService.RenderStepped:Connect(function()
         if character.Parent then -- Ensure character still exists
             local moveDirection = humanoid.MoveDirection
             if moveDirection.Magnitude > 0 then
-                humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position) * CFrame.lookAt(Vector3.new(), moveDirection)
+                local targetCFrame = CFrame.lookAt(humanoidRootPart.Position, humanoidRootPart.Position + moveDirection)
+                humanoidRootPart.CFrame = humanoidRootPart.CFrame:Lerp(targetCFrame, rotationSpeed)
             end
         end
     end)
