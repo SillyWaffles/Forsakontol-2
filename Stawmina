@@ -1,0 +1,13 @@
+local rs = cloneref(game:GetService("ReplicatedStorage"))
+local sprint = rs.Systems.Character.Game.Sprinting
+local m = require(sprint)
+
+m.Stamina = 100
+
+task.spawn(function()
+    while task.wait(0.1) do
+        if m.Stamina <= 5 then
+            m.Stamina = 20
+        end
+    end
+end)
