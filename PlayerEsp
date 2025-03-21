@@ -32,7 +32,7 @@ local function createHealthIndicator(character, textColor)
         healthLabel.TextScaled = true
         healthLabel.Text = ""
         healthLabel.TextColor3 = textColor
-        healthLabel.TextTransparency = 0.8  -- Adjust transparency (0 = fully visible, 1 = fully invisible)
+        healthLabel.TextTransparency = 0.2  -- Adjust transparency (0 = fully visible, 1 = fully invisible)
         healthLabel.Font = Enum.Font.SourceSansBold
         healthLabel.Parent = healthGui
     end
