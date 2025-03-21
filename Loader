@@ -1,6 +1,12 @@
 local ws = cloneref(game:GetService("Workspace"))
 
-if ws:FindFirstChild("Gayze") then return end
+if ws:FindFirstChild("Gayze") then
+cloneref(game:GetService("StarterGui")):SetCore("SendNotification", {
+    Title = "Notification";
+    Text = "Script alr executed";
+    Duration = 5;
+})
+return end
 
 local part = Instance.new("Part")
 part.Parent = ws
