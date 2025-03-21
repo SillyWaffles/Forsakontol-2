@@ -24,7 +24,7 @@ local function updateHL(gen)
     local prog, h = gen:FindFirstChild("Progress"), hl[gen]
     if prog and h then
         local f, o = getColors(prog.Value)
-        local speed = math.clamp(1 - (prog.Value / 100), 0.2, 0.5)
+        local speed = 0.1
         
         local tf = ts:Create(h, TweenInfo.new(speed, Enum.EasingStyle.Linear), {FillColor = f})
         local to = ts:Create(h, TweenInfo.new(speed, Enum.EasingStyle.Linear), {OutlineColor = o})
