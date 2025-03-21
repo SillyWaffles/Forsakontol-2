@@ -24,7 +24,7 @@ local function updateHL(gen)
     local prog, h = gen:FindFirstChild("Progress"), hl[gen]
     if prog and h then
         local f, o = getColors(prog.Value)
-        local speed = 0.1
+        local speed = math.clamp(1 - (prog.Value / 100), 0.2, 0.5)
         
         local tf = ts:Create(h, TweenInfo.new(speed, Enum.EasingStyle.Linear), {FillColor = f})
         local to = ts:Create(h, TweenInfo.new(speed, Enum.EasingStyle.Linear), {OutlineColor = o})
@@ -38,6 +38,19 @@ local function updateHL(gen)
     end
 end
 
+local function monitorProgress(gen)
+    local prog = gen:FindFirstChild("Progress")
+    if not prog then return end
+
+    -- Constantly check for changes every 0.1 seconds
+    task.spawn(function()
+        while gens[gen] and prog do
+            updateHL(gen)
+            task.wait(0.1) -- Fast detection
+        end
+    end)
+end
+
 local function addGen(obj)
     if obj:IsA("Model") and obj.Name == "Generator" and not gens[obj] then
         gens[obj] = true
@@ -47,7 +60,7 @@ local function addGen(obj)
         h.FillColor, h.OutlineColor = f, o
         local prog = obj:FindFirstChild("Progress")
         if prog and prog:IsA("NumberValue") then
-            prog.Changed:Connect(function() updateHL(obj) end)
+            monitorProgress(obj) -- Start the manual detection loop
             updateHL(obj)
         end
     end
@@ -55,28 +68,36 @@ end
 
 local function removeGen(obj)
     if gens[obj] then
-        gens[obj], hl[obj] = nil, nil
-        if hl[obj] then hl[obj]:Destroy() end
+        gens[obj] = nil
+        if hl[obj] then hl[obj]:Destroy() hl[obj] = nil end
     end
 end
 
-local function scanGens()
+local function validateGenerators()
     local m = ws:FindFirstChild("Map")
     local gm = m and m:FindFirstChild("Ingame") and m.Ingame:FindFirstChild("Map")
+    
     if gm then
-        gens, hl = {}, {}
+        -- Add missing generators
         for _, obj in ipairs(gm:GetChildren()) do
-            task.wait(0.5)
-            addGen(obj)
+            if obj:IsA("Model") and obj.Name == "Generator" and not gens[obj] then
+                addGen(obj)
+            end
         end
-        gm.ChildAdded:Connect(addGen)
-        gm.ChildRemoved:Connect(removeGen)
+        
+        -- Remove invalid generators
+        for obj in pairs(gens) do
+            if not obj or not obj.Parent or obj.Parent ~= gm then
+                removeGen(obj)
+            end
+        end
     end
 end
 
+-- Loop to continuously check for new or missing generators
 task.spawn(function()
     while true do
-        scanGens()
-        task.wait(10)
+        validateGenerators()
+        task.wait(1) -- Check every 1 second
     end
 end)
