@@ -1,0 +1,39 @@
+local player = game.Players.LocalPlayer
+local runService = cloneref(game:GetService("RunService"))
+
+local rotationSpeed = 0.10 -- Smooth turning speed
+local tpWalkChance = 0.1 -- 10% chance per frame to trigger a small nudge
+local minNudge = 0.15 -- Smallest movement boost
+local maxNudge = 0.25 -- Largest movement boost
+
+local function applyEffects(character)
+    local humanoid = character:WaitForChild("Humanoid")
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+
+    runService.RenderStepped:Connect(function()
+        if not character or not character.Parent then return end -- Stop if character is removed
+
+        local moveDirection = humanoid.MoveDirection
+        if moveDirection.Magnitude > 0 then
+            -- Smooth rotation
+            local targetCFrame = CFrame.lookAt(rootPart.Position, rootPart.Position + moveDirection * Vector3.new(1, 0, 1))
+            rootPart.CFrame = rootPart.CFrame:Lerp(targetCFrame, rotationSpeed)
+
+            -- Randomized subtle TP Walk
+            if math.random() < tpWalkChance then
+                local randomNudge = math.random() * (maxNudge - minNudge) + minNudge
+                rootPart.CFrame = rootPart.CFrame + rootPart.CFrame.LookVector * randomNudge
+            end
+        end
+    end)
+end
+
+-- Run on spawn and respawn
+local function onCharacterAdded(character)
+    applyEffects(character)
+end
+
+player.CharacterAdded:Connect(onCharacterAdded)
+if player.Character then
+    applyEffects(player.Character) -- Apply if already spawned
+end
