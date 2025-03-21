@@ -1,39 +1,36 @@
-local player = game.Players.LocalPlayer
-local runService = cloneref(game:GetService("RunService"))
+local plr = game.Players.LocalPlayer
+local rs = game:GetService("RunService")
 
-local rotationSpeed = 0.10 -- Smooth turning speed
-local tpWalkChance = 0.1 -- 10% chance per frame to trigger a small nudge
-local minNudge = 0.15 -- Smallest movement boost
-local maxNudge = 0.25 -- Largest movement boost
+local rotSpd = 0.10
+local tpChance = 0.1
+local minN = 0.15
+local maxN = 0.25
 
-local function applyEffects(character)
-    local humanoid = character:WaitForChild("Humanoid")
-    local rootPart = character:WaitForChild("HumanoidRootPart")
+local function applyFX(char)
+    local hum = char:WaitForChild("Humanoid")
+    local root = char:WaitForChild("HumanoidRootPart")
 
-    runService.RenderStepped:Connect(function()
-        if not character or not character.Parent then return end -- Stop if character is removed
+    rs.RenderStepped:Connect(function()
+        if not char or not char.Parent then return end
 
-        local moveDirection = humanoid.MoveDirection
-        if moveDirection.Magnitude > 0 then
-            -- Smooth rotation
-            local targetCFrame = CFrame.lookAt(rootPart.Position, rootPart.Position + moveDirection * Vector3.new(1, 0, 1))
-            rootPart.CFrame = rootPart.CFrame:Lerp(targetCFrame, rotationSpeed)
+        local moveDir = hum.MoveDirection
+        if moveDir.Magnitude > 0 then
+            local targetCF = CFrame.lookAt(root.Position, root.Position + moveDir * Vector3.new(1, 0, 1))
+            root.CFrame = root.CFrame:Lerp(targetCF, rotSpd)
 
-            -- Randomized subtle TP Walk
-            if math.random() < tpWalkChance then
-                local randomNudge = math.random() * (maxNudge - minNudge) + minNudge
-                rootPart.CFrame = rootPart.CFrame + rootPart.CFrame.LookVector * randomNudge
+            if math.random() < tpChance then
+                local randN = math.random() * (maxN - minN) + minN
+                root.CFrame = root.CFrame + root.CFrame.LookVector * randN
             end
         end
     end)
 end
 
--- Run on spawn and respawn
-local function onCharacterAdded(character)
-    applyEffects(character)
+local function onCharAdded(char)
+    applyFX(char)
 end
 
-player.CharacterAdded:Connect(onCharacterAdded)
-if player.Character then
-    applyEffects(player.Character) -- Apply if already spawned
+plr.CharacterAdded:Connect(onCharAdded)
+if plr.Character then
+    applyFX(plr.Character)
 end
