@@ -1,55 +1,45 @@
 -- Dear dair- oh wait wrong one
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local groupId = 33548380 
-local minRank = 2
+local plrs = game:GetService("Players")
+local lp = plrs.LocalPlayer
+local gid, minR = 33548380, 2
 
+local sg = Instance.new("ScreenGui")
+sg.Name = "ModNotifier"
+sg.Parent = game:GetService("CoreGui")
 
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "ModeratorNotifier"
-screenGui.Parent = game:GetService("CoreGui")
+local lbl = Instance.new("TextLabel")
+lbl.Parent = sg
+lbl.Size = UDim2.new(0, 200, 0, 50)
+lbl.Position = UDim2.new(1, -210, 0, 10)
+lbl.BackgroundTransparency = 0.5
+lbl.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+lbl.Font = Enum.Font.SourceSansBold
+lbl.TextWrapped = true
+lbl.TextScaled = true
+lbl.Visible = false
 
+local function updLbl()
+    local mods = {}
 
-local modLabel = Instance.new("TextLabel")
-modLabel.Parent = screenGui
-modLabel.Size = UDim2.new(0, 200, 0, 50)
-modLabel.Position = UDim2.new(1, -210, 0, 10) -- Top-right corner
-modLabel.BackgroundTransparency = 0.5
-modLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-modLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-modLabel.TextScaled = true
-modLabel.Font = Enum.Font.SourceSansBold
-modLabel.Text = "Mods In Game"
-modLabel.Visible = false
-
-local function updateModLabel()
-    local modList = {}
-
-    for _, player in pairs(Players:GetPlayers()) do
-        if player:IsInGroup(groupId) then
-            local rank = player:GetRankInGroup(groupId)
-            if rank >= minRank then
-                table.insert(modList, player.DisplayName)
-            end
+    for _, p in pairs(plrs:GetPlayers()) do
+        if p:IsInGroup(gid) and p:GetRankInGroup(gid) >= minR then
+            table.insert(mods, p.DisplayName)
         end
     end
 
-    if #modList > 0 then
-        modLabel.Visible = true
-        modLabel.Text = "Mods In Game\n" .. table.concat(modList, "\n")
-    else
-        modLabel.Visible = false
-    end
+    lbl.Visible = #mods > 0
+    lbl.Text = #mods > 0 and "Mods In Game\n" .. table.concat(mods, "\n") or ""
 end
 
-Players.PlayerAdded:Connect(function(player)
-    player.CharacterAdded:Wait()
-    updateModLabel()
+plrs.PlayerAdded:Connect(function(p)
+    p.CharacterAdded:Wait()
+    updLbl()
 end)
 
-Players.PlayerRemoving:Connect(function()
-    updateModLabel()
-end)
+plrs.PlayerRemoving:Connect(updLbl)
+
+updLbl()
 
 updateModLabel()
