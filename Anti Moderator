@@ -5,37 +5,51 @@ local LocalPlayer = Players.LocalPlayer
 local groupId = 33548380 
 local minRank = 2
 
-local function notify(Title, message)
-    game.StarterGui:SetCore("SendNotification", {
-        Title = Title,
-        Text = message,
-        Duration = 30
-    })
-end
 
-notify("Gaze", "Anti Moderator Loaded")
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ModeratorNotifier"
+screenGui.Parent = game:GetService("CoreGui")
 
-local function checkForGroupMembers()
+
+local modLabel = Instance.new("TextLabel")
+modLabel.Parent = screenGui
+modLabel.Size = UDim2.new(0, 200, 0, 50)
+modLabel.Position = UDim2.new(1, -210, 0, 10) -- Top-right corner
+modLabel.BackgroundTransparency = 0.5
+modLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+modLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+modLabel.TextSize = 18
+modLabel.Font = Enum.Font.SourceSansBold
+modLabel.Text = "Mods In Game"
+modLabel.Visible = false
+
+local function updateModLabel()
+    local modList = {}
+
     for _, player in pairs(Players:GetPlayers()) do
         if player:IsInGroup(groupId) then
             local rank = player:GetRankInGroup(groupId)
-        if rank == 1 then
-        notify("Gaze", displayName .. " is reporter")
-         end
-
             if rank >= minRank then
-                local displayName = player.DisplayName
-                notify("Gaze", displayName .. " is Suspicious")
-                task.wait(3)
-                LocalPlayer:Kick("Mods In Game")
+                table.insert(modList, player.DisplayName)
             end
         end
+    end
+
+    if #modList > 0 then
+        modLabel.Visible = true
+        modLabel.Text = "Mods In Game\n" .. table.concat(modList, "\n")
+    else
+        modLabel.Visible = false
     end
 end
 
 Players.PlayerAdded:Connect(function(player)
     player.CharacterAdded:Wait()
-    checkForGroupMembers()
+    updateModLabel()
 end)
 
-checkForGroupMembers()
+Players.PlayerRemoving:Connect(function()
+    updateModLabel()
+end)
+
+updateModLabel()
