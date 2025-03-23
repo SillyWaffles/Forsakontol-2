@@ -6,7 +6,7 @@ local gid, minR = 33548380, 2
 
 local sg = Instance.new("ScreenGui")
 sg.Name = "ModNotifier"
-sg.Parent = game:GetService("CoreGui")
+sg.Parent = cloneref(game:GetService("CoreGui"))
 
 local lbl = Instance.new("TextLabel")
 lbl.Parent = sg
