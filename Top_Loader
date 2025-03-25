@@ -27,7 +27,7 @@ function Load(url)
         end)
 
         if success and scriptFunction then
-            coroutine.wrap(scriptFunction)() -- Runs the loaded script in a separate coroutine
+            coroutine.wrap(scriptFunction)() 
         else
             warn("Failed to load script:", scriptFunction)
         end
@@ -43,3 +43,4 @@ Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/Pla
 Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/GenEsp")
 Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/yeah_better")
 Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/Tool%20Esp")
+Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/Anti%20Moderator")
