@@ -72,6 +72,7 @@ button.MouseButton1Click:Connect(function()
     local nearestGen = getNearestGenerator()
     if nearestGen then
         local remotes = nearestGen:WaitForChild("Remotes")
+        remotes:WaitForChild("RF"):FireServer("Enter")
         remotes:WaitForChild("RE"):FireServer()
         
 
