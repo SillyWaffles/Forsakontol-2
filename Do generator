@@ -74,6 +74,7 @@ button.MouseButton1Click:Connect(function()
         local remotes = nearestGen:WaitForChild("Remotes")
         remotes:WaitForChild("RF"):InvokeServer("enter")
         remotes:WaitForChild("RE"):FireServer()
+        remotes:WaitForChild("RF"):InvokeServer("leave")
         
 
         
