@@ -82,7 +82,7 @@ task.wait(0.1)
     else
         warn("No nearby generator found!")
     end
-    task.wait(2)
+    task.wait(math.random(2, 5))
     button.Text = "Do Generator"
     cooldown = false 
 end)
