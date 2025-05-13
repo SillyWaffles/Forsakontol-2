@@ -1,30 +1,37 @@
-local player = game.Players.LocalPlayer
-local runService = cloneref(game:GetService("RunService"))
+local p = game.Players.LocalPlayer
+local rs = cloneref(game:GetService("RunService"))
 
-local function setupRotation(character)
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-    local humanoid = character:WaitForChild("Humanoid")
-    local rotationSpeed = 0.85 -- Almost instant but still smooth
-
-    runService.RenderStepped:Connect(function()
-        if character.Parent then -- Ensure character still exists
-            local moveDirection = humanoid.MoveDirection
-            if moveDirection.Magnitude > 0 then
-                local targetCFrame = CFrame.lookAt(humanoidRootPart.Position, humanoidRootPart.Position + moveDirection)
-                humanoidRootPart.CFrame = humanoidRootPart.CFrame:Lerp(targetCFrame, rotationSpeed)
-            end
-        end
-    end)
+local function nopp(c)
+	for _, v in ipairs(c:GetDescendants()) do
+		if v:IsA("BasePart") then
+			v.CustomPhysicalProperties = PhysicalProperties.new(1000, 0.3, 0.5, 1, 1)
+		end
+	end
 end
 
-local function onCharacterAdded(character)
-    setupRotation(character)
+local function s(c)
+	local hrp = c:WaitForChild("HumanoidRootPart")
+	local h = c:WaitForChild("Humanoid")
+	local spd = 0.85
+
+	rs.RenderStepped:Connect(function()
+		if c.Parent then
+			local dir = h.MoveDirection
+			if dir.Magnitude > 0 then
+				local cf = CFrame.lookAt(hrp.Position, hrp.Position + dir)
+				hrp.CFrame = hrp.CFrame:Lerp(cf, spd)
+			end
+		end
+	end)
 end
 
--- Setup rotation for the current character
-if player.Character then
-    setupRotation(player.Character)
+local function oc(c)
+	s(c)
+	nopp(c)
 end
 
--- Listen for new character spawns
-player.CharacterAdded:Connect(onCharacterAdded)
+if p.Character then
+	oc(p.Character)
+end
+
+p.CharacterAdded:Connect(oc)
