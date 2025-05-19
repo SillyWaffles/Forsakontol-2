@@ -14,7 +14,7 @@ local function s(c)
 	local h = c:WaitForChild("Humanoid")
 	local spd = 0.85
 
-	while task.wait(0.1)
+	rs.RenderStepped:Connect(function()
 		if c.Parent then
 			local dir = h.MoveDirection
 			if dir.Magnitude > 0 then
@@ -22,7 +22,7 @@ local function s(c)
 				hrp.CFrame = hrp.CFrame:Lerp(cf, spd)
 			end
 		end
-	end
+	end)
 end
 
 local function oc(c)
