@@ -19,7 +19,7 @@ local function s(c)
 		if c.Parent then
 			local dir = h.MoveDirection
 			local vel = hrp.Velocity
-if dir.Magnitude > 0 and vel.Magnitude > 5 then
+if dir.Magnitude > 0 and vel.Magnitude > 10 then
 				local cf = CFrame.lookAt(hrp.Position, hrp.Position + dir)
 				hrp.CFrame = hrp.CFrame:Lerp(cf, spd)
 
