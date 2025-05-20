@@ -1,5 +1,5 @@
 local p = game.Players.LocalPlayer
-local rs = cloneref(game:GetService("RunService"))
+local rs = cloneref(game:GetService("RunService")) -- or game:GetService("RunService")
 
 local function nopp(c)
 	for _, v in ipairs(c:GetDescendants()) do
@@ -14,18 +14,24 @@ local function s(c)
 	local h = c:WaitForChild("Humanoid")
 	local spd = 0.85
 	local tpDistance = 0.015
+	local predictionFactor = 0.5
 
 	rs.RenderStepped:Connect(function()
-		if c.Parent then
-			local dir = h.MoveDirection
-			local vel = hrp.Velocity
-if dir.Magnitude > 0 and vel.Magnitude > 10 then
-				local cf = CFrame.lookAt(hrp.Position, hrp.Position + dir)
-				hrp.CFrame = hrp.CFrame:Lerp(cf, spd)
+		if not c.Parent then return end
 
-				-- TP walk
-				hrp.CFrame = hrp.CFrame + dir.Unit * tpDistance
-			end
+		local dir = h.MoveDirection
+		local vel = hrp.Velocity
+
+		if dir.Magnitude > 0 and vel.Magnitude > 10 then
+			-- Predict position using velocity
+			local predictedPos = hrp.Position + vel * predictionFactor
+			local targetCF = CFrame.lookAt(hrp.Position, predictedPos)
+
+			-- Smooth rotation
+			hrp.CFrame = CFrame.new(hrp.Position):Lerp(targetCF, spd)
+
+			-- TP-walk forward
+			hrp.CFrame = hrp.CFrame + dir.Unit * tpDistance
 		end
 	end)
 end
