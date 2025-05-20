@@ -14,7 +14,7 @@ local function s(c)
 	local h = c:WaitForChild("Humanoid")
 	local spd = 0.85
 	local tpDistance = 0.015
-	local predictionFactor = 0.5
+	local predictionFactor = 0.1
 
 	rs.RenderStepped:Connect(function()
 		if not c.Parent then return end
