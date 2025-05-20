@@ -13,13 +13,18 @@ local function s(c)
 	local hrp = c:WaitForChild("HumanoidRootPart")
 	local h = c:WaitForChild("Humanoid")
 	local spd = 0.85
+	local tpDistance = 0.1
 
 	rs.RenderStepped:Connect(function()
 		if c.Parent then
 			local dir = h.MoveDirection
-			if dir.Magnitude > 0 then
+			local vel = hrp.Velocity
+if dir.Magnitude > 0 and vel.Magnitude > 0 then
 				local cf = CFrame.lookAt(hrp.Position, hrp.Position + dir)
 				hrp.CFrame = hrp.CFrame:Lerp(cf, spd)
+
+				-- TP walk
+				hrp.CFrame = hrp.CFrame + dir.Unit * tpDistance
 			end
 		end
 	end)
