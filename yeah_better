@@ -14,17 +14,18 @@ local function s(c)
 	local h = c:WaitForChild("Humanoid")
 	local spd = 0.85
 	local tpDistance = 0.015
-	local predictionFactor = 0.1
+	local predictionFactor = 0.3
 
 	rs.RenderStepped:Connect(function()
 		if not c.Parent then return end
 
 		local dir = h.MoveDirection
 		local vel = hrp.Velocity
+          local hvel = Vector3.new(vel.X, 0, vel.Z)
 
 		if dir.Magnitude > 0 and vel.Magnitude > 10 then
 			-- Predict position using velocity
-			local predictedPos = hrp.Position + vel * predictionFactor
+			local predictedPos = hrp.Position + hvel * predictionFactor
 			local targetCF = CFrame.lookAt(hrp.Position, predictedPos)
 
 			-- Smooth rotation
