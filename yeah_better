@@ -13,7 +13,7 @@ local function s(c)
 	local hrp = c:WaitForChild("HumanoidRootPart")
 	local h = c:WaitForChild("Humanoid")
 	local spd = 0.85
-	local tpDistance = 0.1
+	local tpDistance = 0.015
 
 	rs.RenderStepped:Connect(function()
 		if c.Parent then
