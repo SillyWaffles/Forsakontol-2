@@ -12,17 +12,15 @@ end
 local function s(c)
 	local hrp = c:WaitForChild("HumanoidRootPart")
 	local h = c:WaitForChild("Humanoid")
-	local spd = 0.85
 
-	while task.wait(0.1) do
-		if c.Parent then
-			local dir = h.MoveDirection
-			if dir.Magnitude > 0 and h.WalkSpeed > 1 then
-				local cf = CFrame.lookAt(hrp.Position, hrp.Position + dir)
-				hrp.CFrame = hrp.CFrame:Lerp(cf, spd)
-			end
+	local conn
+	conn = rs.Heartbeat:Connect(function()
+		if not c.Parent then conn:Disconnect() return end
+		local dir = h.MoveDirection
+		if dir.Magnitude > 0 and h.WalkSpeed > 1 then
+			hrp.CFrame = CFrame.lookAt(hrp.Position, hrp.Position + dir)
 		end
-	end
+	end)
 end
 
 local function oc(c)
@@ -30,8 +28,5 @@ local function oc(c)
 	nopp(c)
 end
 
-if p.Character then
-	oc(p.Character)
-end
-
+if p.Character then oc(p.Character) end
 p.CharacterAdded:Connect(oc)
