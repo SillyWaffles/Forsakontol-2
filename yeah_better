@@ -17,7 +17,7 @@ local function s(c)
 	conn = rs.Heartbeat:Connect(function()
 		if not c.Parent then conn:Disconnect() return end
 		local dir = h.MoveDirection
-		if dir.Magnitude > 0 and h.WalkSpeed > 1 then
+		if dir.Magnitude > 0 then
 			hrp.CFrame = CFrame.lookAt(hrp.Position, hrp.Position + dir)
 		end
 	end)
