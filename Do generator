@@ -83,7 +83,7 @@ remotes:WaitForChild("RF"):InvokeServer("leave")
     else
         warn("No nearby generator found!")
     end
-    task.wait(2)
+    task.wait(1)
     button.Text = "Do Generator"
     cooldown = false 
 end)
