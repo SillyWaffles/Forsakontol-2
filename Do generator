@@ -1,6 +1,9 @@
 -- cave divers whe- 🕳️
 
+local runService = game:GetService("RunService")
 
+local isPaused = false
+local isStopped = false
 
 local player = game.Players.LocalPlayer
 local playerName = player.Name
