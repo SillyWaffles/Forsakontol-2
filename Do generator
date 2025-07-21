@@ -9,7 +9,25 @@ local survivorsFolder = workspace:WaitForChild("Players"):WaitForChild("Survivor
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = cloneref(game:GetService("CoreGui"))
 
-
+local function accwait(duration)
+    if not duration or duration <= 0 then return end
+    local start = os.clock()
+    local conn
+    conn = runService.PreRender:Connect(function()
+        if isStopped then conn:Disconnect() end
+    end)
+    while os.clock() - start < duration do
+        if isStopped then
+            conn:Disconnect()
+            return
+        end
+        while isPaused and not isStopped do
+            runService.PreRender:Wait()
+        end
+        runService.PreRender:Wait()
+    end
+    conn:Disconnect()
+end
 
 local button = Instance.new("TextButton")
 button.Parent = screenGui
@@ -74,7 +92,7 @@ button.MouseButton1Click:Connect(function()
         local remotes = nearestGen:WaitForChild("Remotes")
         remotes:WaitForChild("RF"):InvokeServer("enter")
         remotes:WaitForChild("RE"):FireServer()
-task.wait(0.1)
+accwait(0.1)
 remotes:WaitForChild("RF"):InvokeServer("leave")
         
         
@@ -83,7 +101,7 @@ remotes:WaitForChild("RF"):InvokeServer("leave")
     else
         warn("No nearby generator found!")
     end
-    task.wait(1)
+    accwait(0.9)
     button.Text = "Do Generator"
     cooldown = false 
 end)
