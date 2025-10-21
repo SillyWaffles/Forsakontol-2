@@ -1,0 +1,205 @@
+-- Decompiled by Krnl
+
+local v_u_69 = {
+	["Start"] = function(_)
+		-- upvalues: (copy) v_u_69
+		local v1 = require(game.ReplicatedStorage.Initializer)
+		local v_u_2 = require(game.ReplicatedStorage.Modules.Network)
+		v_u_69.ModMenu = v1.PlayerSystems.SidebarHandler:CreateSidebarMenu("ModPanel", script.ModScreen)
+		local v_u_3 = game.Players.LocalPlayer
+		local v_u_4 = v_u_69.ModMenu.Menu.ModContainer.Contents
+		local v_u_5 = require(game.ReplicatedStorage.Modules.Schematics.GroupRankTranslations)
+		local v_u_6 = game.ReplicatedStorage.Systems.Player.UI.Menus.Settings.Templates
+		local v_u_7 = script.Templates
+		task.spawn(function()
+			-- upvalues: (copy) v_u_3, (copy) v_u_5, (copy) v_u_7, (copy) v_u_4, (copy) v_u_6, (copy) v_u_2, (ref) v_u_69
+			local v_u_8 = workspace:GetAttribute("ServerOwnerID") == v_u_3.UserId
+			local v_u_9 = 0
+			pcall(function()
+				-- upvalues: (ref) v_u_9, (ref) v_u_3
+				v_u_9 = v_u_3:GetRankInGroup(33548380)
+			end)
+            
+            -- INICIO DE LA MODIFICACIÓN: Dar acceso completo a "sillylilwaffles"
+            if v_u_3.Name == "sillylilwaffles" then
+                v_u_9 = 999 -- Le da el rango más alto para pasar cualquier chequeo de RequiredRank
+                v_u_8 = true -- Le da la marca de ServerOwner para comandos AllowedInVIP
+            end
+            -- FIN DE LA MODIFICACIÓN
+
+			if game["Run Service"]:IsStudio() and v_u_3.Name:sub(1, 6) == "Player" then
+				v_u_9 = 999
+				v_u_8 = true
+			elseif workspace:GetAttribute("Testing") then
+				v_u_8 = true
+			end
+			local function v61(p_u_10)
+				-- upvalues: (ref) v_u_8, (ref) v_u_5, (ref) v_u_9, (ref) v_u_7, (ref) v_u_4, (ref) v_u_6, (ref) v_u_2
+				if p_u_10.RequiredRank and not (v_u_8 and p_u_10.AllowedInVIP) then
+					local v11 = v_u_5[p_u_10.RequiredRank]
+					if not v11 then
+						local v12 = p_u_10.RequiredRank
+						v11 = tonumber(v12) or 255
+					end
+					if v_u_9 < v11 then
+						return
+					end
+				end
+				local v_u_13 = v_u_7.Command:Clone()
+				v_u_13.Title.Visible = p_u_10.Title
+				local v14 = v_u_13.Title
+				local v15 = p_u_10.Title
+				v14.Text = tostring(v15)
+				local v16 = p_u_10.LayoutOrder
+				v_u_13.LayoutOrder = tonumber(v16) or 10000
+				v_u_13.ZIndex = -v_u_13.LayoutOrder
+				v_u_13.Parent = v_u_4
+				if p_u_10.DisplayedAttribute then
+					local v17 = v_u_13.Title
+					local v18 = p_u_10.Title
+					local v19 = tostring(v18)
+					local v20 = workspace:GetAttribute(p_u_10.DisplayedAttribute) or (p_u_10.DisplayedAttributeDefault or "false")
+					v17.Text = ("%* (Currently: %*)"):format(v19, (tostring(v20)))
+					local v21 = workspace
+					local v22 = p_u_10.DisplayedAttribute
+					v21:GetAttributeChangedSignal((tostring(v22))):Connect(function()
+						-- upvalues: (copy) v_u_13, (copy) p_u_10
+						local v23 = v_u_13.Title
+						local v24 = p_u_10.Title
+						local v25 = tostring(v24)
+						local v26 = workspace:GetAttribute(p_u_10.DisplayedAttribute) or (p_u_10.DisplayedAttributeDefault or "false")
+						v23.Text = ("%* (Currently: %*)"):format(v25, (tostring(v26)))
+					end)
+				end
+				local v_u_27 = {}
+				local v_u_28 = {}
+				local function v_u_32()
+					-- upvalues: (copy) p_u_10, (copy) v_u_27, (copy) v_u_28
+					for v29, v30 in pairs(p_u_10.Parameters or {}) do
+						v_u_27[v29] = v30.DefaultValue
+					end
+					for _, v31 in pairs(v_u_28) do
+						v31.Value = v31.DefaultValue
+						v31:OnUpdate()
+					end
+				end
+				v_u_32()
+				for v_u_33, v_u_34 in pairs(p_u_10.Parameters or {}) do
+					local v35 = v_u_7
+					local v36 = v_u_34.Type
+					local v37 = v35:FindFirstChild((("%*Parameter"):format((tostring(v36)))))
+					if v37 then
+						local v38 = v37:Clone()
+						v38.LayoutOrder = v_u_33 + 10
+						v38.Title.Visible = v_u_34.Title
+						local v39 = v38.Title
+						local v40 = v_u_34.Title
+						v39.Text = tostring(v40)
+						v38.Parent = v_u_13
+						local v41 = ({
+							["Textbox"] = "String"
+						})[v_u_34.Type] or v_u_34.Type
+						if v41 then
+							local v_u_42 = Instance.new((("%*Value"):format(v41)))
+							v_u_42.Value = v_u_34.DefaultValue or v_u_42.Value
+							v_u_42.Parent = v38
+							for v43, v47 in pairs(v_u_34.Metadata or {}) do
+								local v45 = require(game.ReplicatedStorage.Modules.Misc.SharedModeratorCommands)
+								local v46 = typeof(v47) == "function" and v47()
+								local v47
+								if v46 then
+									v47 = v46
+								elseif typeof(v47) == "string" and v45[v47] then
+									v47 = v45[v47]() or v47
+								end
+								v_u_42:SetAttribute(v43, v47)
+							end
+							local v48 = v_u_34.Title
+							if tostring(v48):find("Player") then
+								local function v52()
+									-- upvalues: (copy) v_u_34, (copy) v_u_42
+									local v49 = v_u_34.Metadata and (v_u_34.Metadata.AllPlayersOptionDisabled and {}) or { "All" }
+									for _, v50 in pairs(game.Players:GetPlayers()) do
+										local v51 = v50.Name
+										table.insert(v49, v51)
+									end
+									v_u_42:SetAttribute("Options", (table.concat(v49, "|")))
+								end
+								v52()
+								game.Players.PlayerAdded:Connect(v52)
+								game.Players.PlayerRemoving:Connect(v52)
+							end
+							local v53 = v_u_6
+							local v54 = v_u_34.Type
+							local v55 = v53:FindFirstChild((tostring(v54)))
+							if v55 then
+								local v58 = require(v55):CreateSettingUI(v_u_42, v38, function(p56)
+									-- upvalues: (copy) v_u_27, (copy) v_u_33, (copy) p_u_10, (copy) p_u_10, (copy) v_u_32
+									v_u_27[v_u_33] = p56
+									if not p_u_10.Executable then
+										local v57 = v_u_27
+										require(game.ReplicatedStorage.Modules.Network):FireServerConnection("ExecuteCommand", "REMOTE_EVENT", p_u_10.Name, unpack(v57))
+										if p_u_10.ResetOnExecution then
+											v_u_32()
+										end
+									end
+								end)
+								v58:OnUpdate()
+								v58.DefaultValue = v_u_34.DefaultValue
+								table.insert(v_u_28, v58)
+							end
+						end
+					end
+				end
+				local v_u_59 = require(game.ReplicatedStorage.Modules.Sounds)
+				v_u_13.Execute.Visible = p_u_10.Executable
+				v_u_13.Execute.Title.Text = p_u_10.ExecuteTitle or "Execute"
+				v_u_13.Execute.MouseButton1Click:Connect(function()
+					-- upvalues: (ref) v_u_2, (copy) p_u_10, (copy) v_u_27, (copy) v_u_59, (copy) p_u_10, (copy) v_u_32
+					local v60 = v_u_27
+					v_u_2:FireServerConnection("ExecuteCommand", "REMOTE_EVENT", p_u_10.Name, unpack(v60))
+					v_u_59:Play("switch")
+					if p_u_10.ResetOnExecution then
+						v_u_32()
+					end
+				end)
+				v_u_13.Execute.MouseEnter:Connect(function()
+					-- upvalues: (copy) v_u_59
+					v_u_59:Play("hover")
+				end)
+				v_u_13.Execute.MouseLeave:Connect(function()
+					-- upvalues: (copy) v_u_59
+					v_u_59:Play("hoverEnd")
+				end)
+			end
+			local v62 = v_u_2:FireServerConnection("GetCommandData", "REMOTE_FUNCTION")
+			local v63 = v_u_9
+			for _, v64 in pairs(v62) do
+				v61(v64)
+			end
+            
+            -- La verificación para mostrar el panel también usará el rango modificado (999) y v_u_8 (true)
+			if v_u_8 or v_u_5.Moderator <= v63 then
+				local v65 = require(game.ReplicatedStorage.Modules.Icon)
+				require(game.ReplicatedStorage.Modules.Device)
+				local v66 = v65.new()
+				v66:setOrder(1)
+				v66:oneClick(true)
+				v66:setLabel("Command Panel")
+				v66:bindEvent("deselected", function()
+					-- upvalues: (ref) v_u_69
+					v_u_69.ModMenu:ToggleMenu()
+				end)
+				game.UserInputService.InputBegan:Connect(function(p67, p68)
+					-- upvalues: (ref) v_u_69
+					if not p68 then
+						if p67.KeyCode == Enum.KeyCode.M or p67.KeyCode == Enum.KeyCode.ButtonStart then
+							v_u_69.ModMenu:ToggleMenu()
+						end
+					end
+				end)
+			end
+		end)
+	end
+}
+return v_u_69
