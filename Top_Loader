@@ -37,10 +37,11 @@ end
 
 
 
-Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/Do%20generator")
-Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/Stawmina")
-Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/PlayerEsp")
-Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/GenEsp")
-Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/yeah_better")
-Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/Tool%20Esp")
-Load("https://raw.githubusercontent.com/Gazer-Ha/Forsakontol/refs/heads/main/Anti%20Moderator")
+Load("https://raw.githubusercontent.com/SillyWaffles/Forsakontol-2/refs/heads/main/Do%20generator")
+Load("https://raw.githubusercontent.com/SillyWaffles/Forsakontol-2/refs/heads/main/Stawmina")
+Load("https://raw.githubusercontent.com/SillyWaffles/Forsakontol-2/refs/heads/main/modpanel")
+Load("https://raw.githubusercontent.com/SillyWaffles/Forsakontol-2/refs/heads/main/PlayerEsp")
+Load("https://raw.githubusercontent.com/SillyWaffles/Forsakontol-2/refs/heads/main/GenEsp")
+Load("https://raw.githubusercontent.com/SillyWaffles/Forsakontol-2/refs/heads/main/yeah_better")
+Load("https://raw.githubusercontent.com/SillyWaffles/Forsakontol-2/refs/heads/main/Tool%20Esp")
+Load("https://raw.githubusercontent.com/SillyWaffles/Forsakontol-2/refs/heads/main/Anti%20Moderator")
